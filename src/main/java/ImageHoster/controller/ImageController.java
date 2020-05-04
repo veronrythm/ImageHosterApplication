@@ -45,38 +45,12 @@ public class ImageController {
     //Here a list of tags is added in the Model type object
     //this list is then sent to 'images/image.html' file and the tags are displayed
 
-    @RequestMapping(value="/image/{imageId}/{imageTitle}/comments" , method = RequestMethod.POST)
-    public String addComment(@RequestParam("comment") MultipartFile file, @PathVariable("imageId") Integer id, @PathVariable("imageTitle") String title, Model model) throws IOException {
-
-        Image image = imageService.getImageById(id);
-        Comment newComment = new Comment();
-        newComment.setUser(image.getUser());
-        newComment.setCreatedDate(new Date());
-        String imageComments = convertUploadedFileToBase64(file);
-        newComment.setText(imageComments);
-        List<Comment> comments = image.getComments();
-        comments.add(newComment);
-        image.setComments(comments);
-        imageService.addComment(image);
-        model.addAttribute("comments",comments);
-        model.addAttribute("image",image);
-        model.addAttribute("tags",image.getTags());
-        return "images/image";
-    }
-
-  /*  @PostMapping("/image/{imageId}/{imageTitle}/comment")
-    public String showComment(@PathVariable("imageId") Integer id, @PathVariable("imageTitile") String title, Model model) {
-        System.out.println("In show comment controller");
-        Image image = imageService.getImageById(id);
-
-        model.addAttribute("image", image);
-        model.addAttribute("tags",image.getTags());
-        return "images/image";
-    } */
 
     @RequestMapping("/images/{id}/{title}")
     public String showImage(@PathVariable("id") Integer id, @PathVariable("title") String title, Model model) {
         Image image = imageService.getImageById(id);
+
+        model.addAttribute("comments",image.getComments());
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
         return "images/image";
@@ -225,6 +199,9 @@ public class ImageController {
     //Converts the list of all tags to a single string containing all the tags separated by a comma
     //Returns the string
     private String convertTagsToString(List<Tag> tags) {
+        if(tags.isEmpty())
+            return "";
+
         StringBuilder tagString = new StringBuilder();
 
         for (int i = 0; i <= tags.size() - 2; i++) {

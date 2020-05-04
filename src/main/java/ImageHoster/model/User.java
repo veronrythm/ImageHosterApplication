@@ -30,8 +30,9 @@ public class User {
     //The 'users' table is mapped to 'user_profile' table with One:One mapping
     //cascade = CascadeType.ALL specifies that if a record in 'user_profile' table is deleted or updated, then all the records in 'users' table associated to that particular record in 'user_profile' table will be deleted or updated  first and then the record in the 'user_profile' table will be deleted or updated
     //FetchType is EAGER
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+
     //Below annotation indicates that the name of the column in 'users' table referring the primary key in 'user_profile' table will be 'profile_id'
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "profile_id")
     private UserProfile profile;
 
@@ -43,7 +44,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Image> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Comment> comments = new ArrayList<>();
 
     public Integer getId() {

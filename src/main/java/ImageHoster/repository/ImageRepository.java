@@ -1,5 +1,6 @@
 package ImageHoster.repository;
 
+import ImageHoster.model.Comment;
 import ImageHoster.model.Image;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +21,18 @@ public class ImageRepository {
     //Starts a transaction
     //The transaction is committed if it is successful
     //The transaction is rolled back in case of unsuccessful transaction
+    public void addComment(Comment updatedComment){
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        try{
+            transaction.begin();
+            em.merge(updatedComment);
+            transaction.commit();
+        }catch (Exception e){
+            transaction.rollback();
+        }
+    }
+
     public Image uploadImage(Image newImage) {
 
         EntityManager em = emf.createEntityManager();
@@ -110,16 +123,4 @@ public class ImageRepository {
         }
     }
 
-    public void addComment(Image updatedImage){
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-
-        try{
-            transaction.begin();
-            em.merge(updatedImage);
-            transaction.commit();
-        }catch (Exception e){
-            transaction.rollback();
-        }
-    }
 }
