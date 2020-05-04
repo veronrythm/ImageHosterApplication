@@ -1,9 +1,6 @@
 package ImageHoster.controller;
 
-import ImageHoster.model.Image;
-import ImageHoster.model.Tag;
-import ImageHoster.model.User;
-import ImageHoster.model.UserProfile;
+import ImageHoster.model.*;
 import ImageHoster.service.ImageService;
 import ImageHoster.service.TagService;
 import org.junit.Test;
@@ -16,6 +13,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import sun.plugin.com.event.COMEventHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +82,8 @@ public class ImageControllerTest {
         image.setTitle("new");
         image.setDescription("This image is for testing purpose");
         image.setUser(user);
+
+
 
         Mockito.when(imageService.getImage(Mockito.anyInt())).thenReturn(image);
 
@@ -229,6 +229,7 @@ public class ImageControllerTest {
 
         this.mockMvc.perform(get("/editImage")
                 .param("imageId", "1")
+                .param("tags","test tag")
                 .session(session))
                 .andExpect(model().attribute("editError", "Only the owner of the image can edit the image"));
     }

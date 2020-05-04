@@ -27,6 +27,12 @@ public class CommentController {
     @Autowired
     private ImageService imageService;
 
+    /*
+    This controller method is called when the request pattern is of type '/image/{imageId}/{imageTitle}/comments' and also the incoming request is of POST type
+    The method receives all the details of the Comments to be stored in the database, and now the comment will be sent to the business logic to be persisted in the database
+    Set the date on which the comment is posted
+    After storing the image, this method directs to displaying that image again
+     */
     @RequestMapping(value="/image/{imageId}/{imageTitle}/comments" , method = RequestMethod.POST)
     public String addComment(@RequestParam("comment") String file, @PathVariable("imageId") Integer id, @PathVariable("imageTitle") String title, HttpSession session, Model model) throws IOException {
         Image image = imageService.getImageById(id);
@@ -37,12 +43,6 @@ public class CommentController {
         newComment.setText(file);
         newComment.setImage(image);
         commentService.addComment(newComment);
-        List<Comment> commentList = image.getComments();
-        commentList.add(newComment);
-
-        model.addAttribute("comments",commentList);
-        model.addAttribute("image",image);
-        model.addAttribute("tags",image.getTags());
-        return "images/image";
+        return "redirect:/images/"+image.getId()+"/"+image.getTitle();
     }
 }

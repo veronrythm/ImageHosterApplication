@@ -51,7 +51,7 @@ public class Image {
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Tag> tags = new ArrayList<>();
 
-    @OneToMany(mappedBy = "image", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "image", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
     public Image() {
@@ -70,6 +70,16 @@ public class Image {
         this.imageFile = imageFile;
         this.description = description;
         this.date = date;
+    }
+
+    public Image(int id, String title, String imageFile, String description, Date date, List<Comment> comments, List<Tag> tags) {
+        this.id = id;
+        this.title = title;
+        this.imageFile = imageFile;
+        this.description = description;
+        this.date = date;
+        this.comments=comments;
+        this.tags=tags;
     }
 
     public Integer getId() {

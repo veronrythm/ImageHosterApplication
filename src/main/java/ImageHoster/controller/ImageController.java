@@ -50,7 +50,7 @@ public class ImageController {
     public String showImage(@PathVariable("id") Integer id, @PathVariable("title") String title, Model model) {
         Image image = imageService.getImageById(id);
 
-        model.addAttribute("comments",image.getComments());
+        model.addAttribute("comments", image.getComments());
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
         return "images/image";
@@ -99,7 +99,7 @@ public class ImageController {
     @RequestMapping(value = "/editImage")
     public String editImage(@RequestParam("imageId") Integer imageId, Model model, HttpSession session) {
         Image image = imageService.getImage(imageId);
-        String tags = convertTagsToString(image.getTags());
+        List<Tag> tags = image.getTags();
         if(image.getUser().getId() == (((User)session.getAttribute("loggeduser")).getId())){
             model.addAttribute("image", image);
             model.addAttribute("tags", tags);
@@ -125,7 +125,7 @@ public class ImageController {
     //The method also receives tags parameter which is a string of all the tags separated by a comma using the annotation @RequestParam
     //The method converts the string to a list of all the tags using findOrCreateTags() method and sets the tags attribute of an image as a list of all the tags
     @RequestMapping(value = "/editImage", method = RequestMethod.PUT)
-    public String editImageSubmit(@RequestParam("file") MultipartFile file, @RequestParam("imageId") Integer imageId, @RequestParam("tags") String tags, Image updatedImage, HttpSession session) throws IOException {
+    public String editImageSubmit(@RequestParam("file") MultipartFile file, @RequestParam("imageId") Integer imageId, @RequestParam("tags") String tags, Image updatedImage, HttpSession session, Model model) throws IOException {
 
         Image image = imageService.getImage(imageId);
         String updatedImageData = convertUploadedFileToBase64(file);
@@ -144,7 +144,10 @@ public class ImageController {
         updatedImage.setDate(new Date());
 
         imageService.updateImage(updatedImage);
-        return "redirect:/images/" + updatedImage.getTitle();
+
+        model.addAttribute("image", updatedImage);
+        model.addAttribute("tags", imageTags);
+        return "redirect:/images/"+imageId+"/"+updatedImage.getTitle();
     }
 
 
@@ -154,7 +157,7 @@ public class ImageController {
     @RequestMapping(value = "/deleteImage", method = RequestMethod.DELETE)
     public String deleteImageSubmit(@RequestParam(name = "imageId") Integer imageId, HttpSession session, Model model) {
         Image image = imageService.getImage(imageId);
-        String tags = convertTagsToString(image.getTags());
+        List<Tag> tags= image.getTags();
         if(image.getUser().getId() == (((User)session.getAttribute("loggeduser")).getId())){
             imageService.deleteImage(imageId);
             model.addAttribute("image", image);
