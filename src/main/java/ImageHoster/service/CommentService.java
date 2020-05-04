@@ -12,5 +12,6 @@ public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
 
+    //The method calls the addComment() method in the Repository and passes the Comment to be updated in the database
     public void addComment(Comment comment) { commentRepository.addComment(comment); }
 }
